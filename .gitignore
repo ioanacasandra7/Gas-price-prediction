@@ -132,3 +132,6 @@ dmypy.json
 #ignore config file
 config.js
 config.py
+.ipynb_checkpoints
+.DS_store
+_pycache_

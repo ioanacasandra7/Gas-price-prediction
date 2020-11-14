@@ -2,3 +2,4 @@
 .DS_store
 _pycache_
 config.py
+config.js

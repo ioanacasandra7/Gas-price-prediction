@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>U.S. Gas Price</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+
+  <!-- Our CSS -->
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+      <!-- math.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.5.1/math.min.js"></script>
+
+      <!-- Plotly -->
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+      <!-- Bootstrap-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css"
+        integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">
+    </head>
+    
+    <body>
+      <div class="col-md-12 text-center">
+        <h1 style="padding: 2%">U.S. Gas Price Visualization and Projection</h1>
+        
+      </div>
+      <div class="row">
+        <div class="col-12" style= "padding: 2%">
+            <!-- The div that holds US map -->
+            <div id="overViewMap"></div>           
+        </div>
+      </div>
+      <div class="col-md-12 text-center">
+        <h3>Chart Group</h3>
+      </div>
+      <div class="row chartrow">
+        <div class="col-md-4">
+          <div id="chart1"></div>
+        </div>
+        <div class="col-md-4">
+          <div id="chart2"></div>
+        </div>
+        <div class="col-md-4">
+          <div id="chart3"></div>
+        </div>
+      </div>
+      
+      <div class="col-md-12 text-center">
+        <h3>Modeul Results</h3>
+      </div>
+      <div class="row" style ="padding: 2%">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+                <h5>Select Model:</h5>
+                <div class="dropdown">
+                  <button class="dropbtn">--select--</button>
+                  <div class="dropdown-content" id="selDataset">
+                   <!-- The div that holds model chart --> 
+                  </div>
+                </div>
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                 <h5>Model Chart</h5>
+                </div>
+                <div id="model-chart" class="panel-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class = "col-md-6">
+          <div id="modeltlb"></div>
+        </div>
+      </div>
+
+    
+      <!-- Leaflet JS -->
+      <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+      <!-- D3 JavaScript -->
+      <script src="https://d3js.org/d3.v6.min.js"></script>
+      <!-- Choropleth Library-->
+      <script type="text/javascript" src="{{url_for('static', filename='js/choropleth.js')}}"></script>
+
+      <!-- API key -->
+      <script type="text/javascript" src="{{url_for('static', filename='js/config.js')}}"></script>
+
+      <!-- Graphs JavaScript -->
+      <script type="text/javascript" src="{{url_for('static', filename='js/lineGraph.js')}}"></script>
+      <script type="text/javascript" src="{{url_for('static', filename='js/makeHistogram.js')}}"></script>
+      <script type="text/javascript" src="{{url_for('static', filename='js/nbhdMap.js')}}"></script>
+
+      <!-- Render Graphs -->
+      <script type="text/javascript" src="{{url_for('static', filename='js/makeGraphs.js')}}"></script>
+      <script type="text/javascript" src="{{url_for('static', filename='js/overViewMap.js')}}"></script>
+
+
+</body>
+
+</html>

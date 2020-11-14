@@ -1,0 +1,31 @@
+/* set map, body, and html to 100% of the screen size */
+#overViewMap {
+  position: relative;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 400px;  /* or as desired */
+  width: 50%;  /* This means "100% of the width of its container", the .col-md-8 */
+  margin: 0 auto;
+}
+
+#nbhdMap {
+  position: relative;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 250px;  /* or as desired */
+  width: 90%;  /* This means "100% of the width of its container", the .col-md-8 */
+  margin: 0 auto;
+}
+
+.legend {
+  padding: 2%;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.box {float:left;
+      width: 15px; 
+      height: 15px;}

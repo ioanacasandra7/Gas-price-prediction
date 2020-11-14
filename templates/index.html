@@ -1,0 +1,56 @@
+<!-- https://gist.github.com/dwtkns/c6945b98afe6cc2fc410 -->
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.counties {
+  fill:   none;
+  stroke: black;
+  opacity:0.2;
+}
+
+.states {
+  fill:   none;
+  stroke: black;
+  stroke-linejoin: round;
+}
+
+.make-it-red {
+  fill: red;
+  stroke: yellow;
+  stroke-width: 2px;
+}
+
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+var maptype = 'topojson';
+
+
+var width = 960,
+    height = 600;
+
+
+var projection = d3.geo.albersUsa()
+    .scale(1280)
+    .translate([width / 2, height / 2]);
+
+
+var path = d3.geo.path()
+    .projection(projection);
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+queue()
+    .defer(d3.json, "us-states.geojson")
+    .defer(d3.json, "us-states.topojson")
+    .await(ready);

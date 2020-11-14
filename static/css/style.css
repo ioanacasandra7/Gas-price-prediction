@@ -30,9 +30,11 @@
 
 h1 {
   font-family: "Times New Roman";
-  color: whitesmoke;
+  color: white;
   text-align: center;
   background-color:navy;
+  background-image:url("../../assets/gas-station.jpg");
+  
 }
 
 h3{

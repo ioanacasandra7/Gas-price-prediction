@@ -14,40 +14,26 @@ function difference(arr){
         arrDifferenced.push(arr[i] - arr[i-1])
     }
 
-    // for each api, this will give the price or total change from one week to the next
-    // console.log(arrDifferenced)
     return arrDifferenced
 }
 
 function processData(d){
     //difference gas prices
     let gasPricesProcessed =[]
-    for(let i = 0; i<8; i++){
-        gasPricesProcessed.push(difference(d[i]).slice(0,8).reverse());
+    for(let i = 0; i<5; i++){
+        gasPricesProcessed.push(difference(d[i]).slice(0,4).reverse());
     }
 
-    console.log(`There are ${gasPricesProcessed.length} gas price arrays that contain ${gasPricesProcessed[0].length} elements `)
-
-    let elements = gasPricesProcessed.length*gasPricesProcessed[0].length
-
-    console.log(`This is a total of ${elements} elements`)
-    // console.log(gasPricesProcessed)
     // Process WTI spot price
-    let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,8).reverse();
-
-    console.log(`There are ${WTIProcessed.length} WTI processed elements`)
-    // console.log(WTIProcessed)
+    let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,4).reverse();
 
     // Process Import/Export data
-    let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,8).reverse();
-    let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,8).reverse();
-
-    // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
-    // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
+    let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,4).reverse();
+    let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,4).reverse();
 
     //make tensor
     let week=[]
-    for(let i=0; i<8; i++){
+    for(let i=0; i<4; i++){
         week.push([gasPricesProcessed[0][i], 
         gasPricesProcessed[1][i], 
         gasPricesProcessed[2][i], 
@@ -57,7 +43,7 @@ function processData(d){
         petroleum_exportProcessed[i],
         petroleum_importProcessed[i]])
     }
-    // console.log(week)
+
     return week
 }
 
@@ -67,24 +53,17 @@ async function makePrediction(d, timesteps){
         const model = await tf.loadLayersModel("LSTM_model/model.json")
         let week = processData(d);
 
-        // console.log(week)
-
         //use model to compute predicted quantities for timestep periods
         for(let i=0; i<timesteps; i++){
             //convert week to tensor
-            let forPrediction = tf.tensor([[week[week.length - 8], week[week.length - 7], week[week.length - 7], week[week.length - 5]
-                ,week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 8,8])
-
-            // console.log(forPrediction)
+            let forPrediction = tf.tensor([[week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 4,8])
 
             // run the model
             prediction = model.predict(forPrediction).arraySync()[0];
-
-            // console.log(prediction)
             
             week.push(prediction)
         }
-
+        
         for(let i=0; i<5; i++){
             for(let j=1;j<=timesteps;j++){
                 d[i].unshift(d[i][0] + week[j][i])
@@ -110,13 +89,13 @@ Promise.all([
 
     let data = [];
     let timeStamps =[];
-    let timesteps = 20;
+    let timesteps = 3;
     
     for(let i =0; i<8; i++){
         data.push(d[i].series[0].data.map(a => parseFloat(a[1])));
     }
 
-    // convert dates to javascript date objects
+    // convert dates to javescript date objects
     let parser =  d3.timeParse("%Y%m%d");
     timeStamps= d[0].series[0].data.map(a => parser(a[0]));
 
@@ -128,33 +107,16 @@ Promise.all([
     //make predicitons
     makePrediction(data, timesteps).then(function(prediction){
 
-        console.log(prediction)
-        predictedData =[]
-        pastData = []
+        console.log(typeof prediction[0][0])
 
-        for(let i =timesteps; i<timesteps + 96; i++){
-            pastData.push( {
-                time: timeStamps[i],
-                eastCoast: parseFloat(prediction[0][i]),
-                midwest: parseFloat(prediction[1][i]),
-                gulfCoast: parseFloat(prediction[2][i]),
-                rockyMountain: parseFloat(prediction[3][i]),
-                westCoast: parseFloat(prediction[4][i])
-            } )
+        predictedData = {
+            time: timeStamps,
+            eastCoast: prediction[0],
+            midwest: prediction[1],
+            gulfCoast: prediction[2],
+            rockyMountain: prediction[3],
+            westCoast: prediction[4]
         }
-
-        for(let i =0; i<=timesteps; i++){
-            predictedData.push( {
-                time: timeStamps[i],
-                eastCoast: parseFloat(prediction[0][i]),
-                midwest: parseFloat(prediction[1][i]),
-                gulfCoast: parseFloat(prediction[2][i]),
-                rockyMountain: parseFloat(prediction[3][i]),
-                westCoast: parseFloat(prediction[4][i])
-            } )
-        }
-
-        console.log(predictedData[0])
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -171,12 +133,9 @@ Promise.all([
                 "translate(" + margin.left + "," + margin.top + ")");
             
 
-        xMin = Math.min(d3.min(pastData, function(d) { return d.time; }), d3.min(predictedData, function(d) { return d.time; }) )
-        xMax = Math.max(d3.max(pastData, function(d) { return d.time; }), d3.max(predictedData, function(d) { return d.time; }) )
-        
         // Add X axis --> it is a date format
         var xScale = d3.scaleTime()
-            .domain([xMin, xMax])
+            .domain(d3.extent(predictedData.time))
             .range([ 0, width ]);
 
         svg.append("g")
@@ -185,7 +144,7 @@ Promise.all([
 
         // Add Y axis
         var yScale = d3.scaleLinear()
-            .domain(d3.extent(pastData, function(d) { return d.eastCoast; }))
+            .domain([0, d3.max(predictedData.eastCoast)])
             .range([ height, 0 ]);
 
         svg.append("g")
@@ -193,20 +152,13 @@ Promise.all([
 
         //create line
         let makeLine = d3.line()
-                        .x(d => xScale(d.time))
+                        .x(d=> yScale(d.time))
                         .y(d => yScale(d.eastCoast));
 
-        // Add the past line
+        // Add the line
         svg.append("path")
             .attr("fill", "none")
             .attr("stroke", "steelblue")
-            .attr("stroke-width", 1.5)
-            .attr("d", makeLine(pastData))
-
-        //add the prediction line
-        svg.append("path")
-            .attr("fill", "none")
-            .attr("stroke", "red")
             .attr("stroke-width", 1.5)
             .attr("d", makeLine(predictedData))
     });

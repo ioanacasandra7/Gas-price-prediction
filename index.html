@@ -34,7 +34,18 @@
       <div class="row">
         <div class="col-12" style= "padding: 2%">
             <!-- The div that holds US map -->
-            <div id="overViewMap"></div>           
+            <div id="overViewMap">
+              <div class="dropdown">
+                <select class="custom-select mr-sm-2" id="region-selector">
+                  <option value="eastCoast">East Coast</option>
+                  <option value="midwest">Midwest</option>
+                  <option value="gulfCoast">Gulf Coast</option>
+                  <option value="rockyMountain">Rocky Mountains</option>
+                  <option value="westCoast">West Coast</option>
+                </select>
+              </div>
+
+            </div>           
         </div>
       </div>
       <div class="col-md-12 text-center">
@@ -53,7 +64,7 @@
       </div>
       
       <div class="col-md-12 text-center">
-        <h3>Modeul Results</h3>
+        <h3>Model Results</h3>
       </div>
       <div class="row" style ="padding: 2%">
         <div class="col-md-6">
@@ -61,47 +72,39 @@
             <div class="card-body">
                 <h5>Select Model:</h5>
                 <div class="dropdown">
-                  <button class="dropbtn">--select--</button>
+                  <select class="custom-select mr-sm-2" id="model-selector">
+                    <option value="all_channel_linear_js">Linear</option>
+                    <option value="all_channel_LSTM_js">LSTM - 1</option>
+                  </select>
                   <div class="dropdown-content" id="selDataset">
                    <!-- The div that holds model chart --> 
                   </div>
                 </div>
               <div class="panel panel-primary">
                 <div class="panel-heading">
-                 <h5>Model Chart</h5>
+                 <h5>Model Description</h5>
                 </div>
-                <div id="model-chart" class="panel-body"></div>
+                <div id="model-description" class="panel-body" ></div>
               </div>
             </div>
           </div>
         </div>
         <div class = "col-md-6">
-          <div id="modeltlb"></div>
+          <div id="model-chart" style = "height: 350px; background-color: white; padding:1%"></div>
         </div>
       </div>
 
     
-      <!-- Leaflet JS -->
-      <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-        crossorigin=""></script>
+      
       <!-- D3 JavaScript -->
       <script src="https://d3js.org/d3.v6.min.js"></script>
-      <!-- Choropleth Library-->
-      <script type="text/javascript" src="{{url_for('static', filename='js/choropleth.js')}}"></script>
 
-      <!-- API key -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/config.js')}}"></script>
+      <!-- Tensorflow -->
+      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.1/dist/tf.min.js"></script>
 
-      <!-- Graphs JavaScript -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/lineGraph.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/makeHistogram.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/nbhdMap.js')}}"></script>
 
-      <!-- Render Graphs -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/makeGraphs.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/overViewMap.js')}}"></script>
-
+      <!-- runModel -->
+      <script src="static/js/runModelMP.js"></script>
 
 </body>
 

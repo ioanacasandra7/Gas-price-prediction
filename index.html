@@ -53,7 +53,7 @@
       </div>
       
       <div class="col-md-12 text-center">
-        <h3>Modeul Results</h3>
+        <h3>Model Results</h3>
       </div>
       <div class="row" style ="padding: 2%">
         <div class="col-md-6">
@@ -70,7 +70,7 @@
                 <div class="panel-heading">
                  <h5>Model Chart</h5>
                 </div>
-                <div id="model-chart" class="panel-body"></div>
+                <div id="model-chart" class="panel-body" style = "height: 200px;"></div>
               </div>
             </div>
           </div>
@@ -81,27 +81,16 @@
       </div>
 
     
-      <!-- Leaflet JS -->
-      <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-        crossorigin=""></script>
+      
       <!-- D3 JavaScript -->
       <script src="https://d3js.org/d3.v6.min.js"></script>
-      <!-- Choropleth Library-->
-      <script type="text/javascript" src="{{url_for('static', filename='js/choropleth.js')}}"></script>
 
-      <!-- API key -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/config.js')}}"></script>
+      <!-- Tensorflow -->
+      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.1/dist/tf.min.js"></script>
 
-      <!-- Graphs JavaScript -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/lineGraph.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/makeHistogram.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/nbhdMap.js')}}"></script>
 
-      <!-- Render Graphs -->
-      <script type="text/javascript" src="{{url_for('static', filename='js/makeGraphs.js')}}"></script>
-      <script type="text/javascript" src="{{url_for('static', filename='js/overViewMap.js')}}"></script>
-
+      <!-- runModel -->
+      <script src="static/js/runModelMP.js"></script>
 
 </body>
 

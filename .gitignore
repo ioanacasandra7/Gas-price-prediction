@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+.ipynb_checkpoints
+.DS_store
+_pycache_
+config.py
+config.js
+=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -135,3 +142,4 @@ config.py
 .ipynb_checkpoints
 .DS_store
 _pycache_
+>>>>>>> main

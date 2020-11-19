@@ -17,47 +17,96 @@ function difference(arr) {
     return arrDifferenced
 }
 
-function processData(d) {
+function processData(d,modelChoice) {
     //difference gas prices
     let gasPricesProcessed = []
-    for (let i = 0; i < 5; i++) {
-        gasPricesProcessed.push(difference(d[i]).slice(0, 4).reverse());
-    }
-
-    // Process WTI spot price
-    let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0, 4).reverse();
-
-    // Process Import/Export data
-    let petroleum_exportProcessed = d[6].map(a => a / 100000).slice(0, 4).reverse();
-    let petroleum_importProcessed = d[7].map(a => a / 100000).slice(0, 4).reverse();
 
     //make tensor
     let week = []
-    for (let i = 0; i < 4; i++) {
-        week.push([gasPricesProcessed[0][i],
-        gasPricesProcessed[1][i],
-        gasPricesProcessed[2][i],
-        gasPricesProcessed[3][i],
-        gasPricesProcessed[4][i],
-        WTIProcessed[i],
-        petroleum_exportProcessed[i],
-        petroleum_importProcessed[i]])
-    }
 
+    if (modelChoice=='LSTM_model'){
+        for(let i = 0; i<8; i++){
+            gasPricesProcessed.push(difference(d[i]).slice(0,8).reverse());
+        }
+    
+        // console.log(`There are ${gasPricesProcessed.length} gas price arrays that contain ${gasPricesProcessed[0].length} elements `)
+    
+        let elements = gasPricesProcessed.length*gasPricesProcessed[0].length
+    
+        // console.log(`This is a total of ${elements} elements`)
+        // console.log(gasPricesProcessed)
+        // Process WTI spot price
+        let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,8).reverse();
+    
+        // console.log(`There are ${WTIProcessed.length} WTI processed elements`)
+        // console.log(WTIProcessed)
+    
+        // Process Import/Export data
+        let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,8).reverse();
+        let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,8).reverse();
+    
+        // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
+        // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
+    
+        for(let i=0; i<8; i++){
+            week.push([gasPricesProcessed[0][i], 
+            gasPricesProcessed[1][i], 
+            gasPricesProcessed[2][i], 
+            gasPricesProcessed[3][i],
+            gasPricesProcessed[4][i], 
+            WTIProcessed[i], 
+            petroleum_exportProcessed[i],
+            petroleum_importProcessed[i]])
+        }
+    }
+            else{
+
+            for (let i = 0; i < 5; i++) {
+                gasPricesProcessed.push(difference(d[i]).slice(0, 4).reverse());
+            }
+        
+            // Process WTI spot price
+            let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0, 4).reverse();
+        
+            // Process Import/Export data
+            let petroleum_exportProcessed = d[6].map(a => a / 100000).slice(0, 4).reverse();
+            let petroleum_importProcessed = d[7].map(a => a / 100000).slice(0, 4).reverse();
+        
+
+            for (let i = 0; i < 4; i++) {
+                week.push([gasPricesProcessed[0][i],
+                gasPricesProcessed[1][i],
+                gasPricesProcessed[2][i],
+                gasPricesProcessed[3][i],
+                gasPricesProcessed[4][i],
+                WTIProcessed[i],
+                petroleum_exportProcessed[i],
+                petroleum_importProcessed[i]])
+            }  
+        }
+        console.log(week)
     return week
 }
 
 async function makePrediction(d, timesteps, modelChoice) {
 
     // Load model
-    const model = await tf.loadLayersModel(`models/${modelChoice}/model.json`)
-    let week = processData(d);
+    const model = await tf.loadLayersModel(`static/js/models/${modelChoice}/model.json`)
+    let week = processData(d,modelChoice);
+    let forPrediction
 
     //use model to compute predicted quantities for timestep periods
     for (let i = 0; i < timesteps; i++) {
         //convert week to tensor
-        let forPrediction = tf.tensor([[week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 4, 8])
 
+        if (modelChoice == 'LSTM_model'){
+            forPrediction = tf.tensor([[week[week.length - 8], week[week.length - 7], week[week.length - 7], week[week.length - 5]
+                ,week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 8,8])
+
+        } else {
+        
+            forPrediction = tf.tensor([[week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 4, 8])
+        }
         // run the model
         prediction = model.predict(forPrediction).arraySync()[0];
 

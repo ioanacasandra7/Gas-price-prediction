@@ -24,100 +24,6 @@
       <!-- Bootstrap-->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css"
         integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">
-<<<<<<< HEAD
-
-
-    </head>
-    <body>
-        <div class="col-md-12 text-center">
-            <h1 style="padding: 2%">U.S. Gas Price Visualization and Projection</h1>
-            
-          </div>
-          <div class="row">
-            <div class="col-12" style= "padding: 2%">
-                <!-- The div that holds US map -->
-                <div id="overViewMap">
-                  <div class="dropdown">
-                    <select class="custom-select mr-sm-2" id="region-selector">
-                      <option value="eastCoast">East Coast</option>
-                      <option value="midwest">Midwest</option>
-                      <option value="gulfCoast">Gulf Coast</option>
-                      <option value="rockyMountain">Rocky Mountains</option>
-                      <option value="westCoast">West Coast</option>
-                    </select>
-                  </div>
-    
-                </div>           
-            </div>
-          </div>
-          <div class="col-md-12 text-center">
-            <h3>Chart Group</h3>
-          </div>
-          <div class="row chartrow">
-            <div class="col-md-4">
-              <div id="chart1"></div>
-            </div>
-            <div class="col-md-4">
-              <div id="chart2"></div>
-            </div>
-            <div class="col-md-4">
-              <div id="chart3"></div>
-            </div>
-          </div>
-          
-          <div class="col-md-12 text-center">
-            <h3>Model Results</h3>
-          </div>
-          <div class="row" style ="padding: 2%">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-body">
-                    <h5>Select Model:</h5>
-                    <div class="dropdown">
-                      <select class="custom-select mr-sm-2" id="model-selector">
-                        <option value="all_channel_linear_js">Linear</option>
-                        <option value="all_channel_LSTM_js">LSTM - 1</option>
-                        <option value="LSTM_model">LSTM - 2</option>
-                      </select>
-                      <div class="dropdown-content" id="selDataset">
-                       <!-- The div that holds model chart --> 
-                      </div>
-                    </div>
-                  <div class="panel panel-primary">
-                    <div class="panel-heading">
-                     <h5>Model Description</h5>
-                    </div>
-                    <div id="model-description" class="panel-body" ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class = "col-md-6">
-              <div id="model-chart" style = "height: 350px; background-color: white; padding:1%"></div>
-            </div>
-          </div>
-    
-        
-          
-
-
-
-
-
-
-
-
-        <!-- LOAD OUR CLASSES -->
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.1/dist/tf.min.js"></script>
-
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-       
-
-        <script src="config.js"></script>
-        <script src="model.js"></script>
-
-    </body>
-=======
     </head>
     
     <body>
@@ -169,6 +75,7 @@
                   <select class="custom-select mr-sm-2" id="model-selector">
                     <option value="all_channel_linear_js">Linear</option>
                     <option value="all_channel_LSTM_js">LSTM - 1</option>
+                    <option value="LSTM_model">LSTM - 2</option>
                   </select>
                   <div class="dropdown-content" id="selDataset">
                    <!-- The div that holds model chart --> 
@@ -202,5 +109,4 @@
 
 </body>
 
->>>>>>> main
 </html>

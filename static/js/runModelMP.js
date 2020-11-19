@@ -19,12 +19,10 @@ function simpleAve(arr){
         arrSimpleave.push((arr[i] - arrMean)/arrStdev)
     }
 
-    console.log(arrSimpleave)
+    // console.log(arrSimpleave)
     return arrSimpleave
 
 }
-
-
 
 function difference(arr) {
     
@@ -58,7 +56,7 @@ function processData(d,modelChoice) {
     
         // Process Import/Export data
         let petroleum_exportProcessed = simpleAve(d[6].slice(0,8).reverse());
-        let petroleum_importProcessed = simpleAve(d[7].map(a => a /100000).slice(0,8).reverse());
+        let petroleum_importProcessed = simpleAve(d[7].slice(0,8).reverse());
     
         // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
         // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
@@ -265,6 +263,119 @@ function makeModelChart(data, timeStamps, region, timesteps, modelChoice) {
     });
 };
 
+function makeChart3(data, dates,timesteps) {
+        // console.log(dates)
+        // console.log(data[6])
+        // console.log(data[7])
+
+        let exports=data[6]
+        let imports=data[7]
+        
+        pastData = []
+
+        for (let i = 0; i < 96; i++) {
+            pastData.push({
+                time: dates[i],
+                exportData: exports[i],
+                importData: imports[i]
+            })
+        }
+
+        // console.log(pastData[0])
+
+        // console.log(timeStamps)
+
+        chartWidth = parseInt(d3.select("#chart3").style("width"))-5;
+        chartHeight = parseInt(d3.select("#chart3").style("height"))-5;
+
+        // set the dimensions and margins of the graph
+        let margin = { top: 10, right: 30, bottom: 30, left: 60 },
+            width = chartWidth - margin.left - margin.right,
+            height = chartHeight - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        let svg = d3.select("#chart3")
+            .append("svg")
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+
+        xMin = d3.min(pastData, function (d) { return d.time; })
+        xMax = d3.max(pastData, function (d) { return d.time; })
+
+        console.log(`The earliest date that is reflected in this chart is ${xMin}, and the latest is ${xMax}`)
+
+        // // Add X axis --> it is a date format
+        var xScale = d3.scaleTime()
+            .domain([xMin, xMax])
+             .range([0, width]);
+
+        console.log(xScale)
+
+        svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale));
+
+        yMin = Math.min(d3.min(pastData, function (d) { return d.exportData; }), d3.min(pastData, function (d) { return d.importData; }))
+        yMax = Math.max(d3.max(pastData, function (d) { return d.exportData; }), d3.max(pastData, function (d) { return d.importData; }))
+
+        console.log(yMin,yMax)
+
+        // // Add Y axis
+        var yScale = d3.scaleLinear()
+            .domain([yMin, yMax])
+            .range([height, 0]);
+
+        svg.append("g")
+            .call(d3.axisLeft(yScale));
+
+        //create line
+        let makeLine1 = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.exportData))
+
+         // Add the export line
+         svg.append("path")
+             .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 1.5)
+            .attr("d", makeLine1(pastData))
+
+        let makeLine2 = d3.line()
+        .x(d => xScale(d.time))
+        .y(d => yScale(d.importData))
+
+        // Add the import line
+        svg.append("path")
+        .attr("fill", "none")
+        .attr("stroke", "red")
+        .attr("stroke-width", 1.5)
+        .attr("d", makeLine2(pastData))
+
+        // //add y label
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Petroleum exports/imports");
+
+        // //add Chart Title
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", 0 - (margin.top / 2 - 20))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "underline")
+            .text("Petroleum Exports & Imports");
+    
+};
+
+
  function makePage(region, timesteps, modelChoice){
 
     Promise.all([
@@ -288,6 +399,8 @@ function makeModelChart(data, timeStamps, region, timesteps, modelChoice) {
         // convert dates to javescript date objects
         let parser = d3.timeParse("%Y%m%d");
         timeStamps = d[0].series[0].data.map(a => parser(a[0]));
+        dates = d[0].series[0].data.map(a => parser(a[0]));
+        
 
         //add additional timeStamps for the predicted values
         for (let i = 0; i < timesteps; i++) {
@@ -295,8 +408,10 @@ function makeModelChart(data, timeStamps, region, timesteps, modelChoice) {
         }
 
         makeModelChart(data, timeStamps, region, timesteps, modelChoice)
+        makeChart3(data,dates,timesteps)
 
     });}
+
 
 // select dropdown menu and make an event handler
 let dropDownModel = d3.select("#model-selector");

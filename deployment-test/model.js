@@ -50,7 +50,11 @@ function processData(d){
 async function makePrediction(d, timesteps){
 
         // Load model
+<<<<<<< HEAD
         const model = await tf.loadLayersModel("LSTM_model/model.json")
+=======
+        const model = await tf.loadLayersModel("all_channel_LSTM_js/model.json")
+>>>>>>> main
         let week = processData(d);
 
         //use model to compute predicted quantities for timestep periods
@@ -89,7 +93,11 @@ Promise.all([
 
     let data = [];
     let timeStamps =[];
+<<<<<<< HEAD
     let timesteps = 3;
+=======
+    let timesteps = 12;
+>>>>>>> main
     
     for(let i =0; i<8; i++){
         data.push(d[i].series[0].data.map(a => parseFloat(a[1])));
@@ -107,6 +115,7 @@ Promise.all([
     //make predicitons
     makePrediction(data, timesteps).then(function(prediction){
 
+<<<<<<< HEAD
         console.log(typeof prediction[0][0])
 
         predictedData = {
@@ -118,6 +127,36 @@ Promise.all([
             westCoast: prediction[4]
         }
 
+=======
+        console.log(prediction)
+        predictedData =[]
+        pastData = []
+
+        for(let i =timesteps; i<timesteps + 96; i++){
+            pastData.push( {
+                time: timeStamps[i],
+                eastCoast: parseFloat(prediction[0][i]),
+                midwest: parseFloat(prediction[1][i]),
+                gulfCoast: parseFloat(prediction[2][i]),
+                rockyMountain: parseFloat(prediction[3][i]),
+                westCoast: parseFloat(prediction[4][i])
+            } )
+        }
+
+        for(let i =0; i<=timesteps; i++){
+            predictedData.push( {
+                time: timeStamps[i],
+                eastCoast: parseFloat(prediction[0][i]),
+                midwest: parseFloat(prediction[1][i]),
+                gulfCoast: parseFloat(prediction[2][i]),
+                rockyMountain: parseFloat(prediction[3][i]),
+                westCoast: parseFloat(prediction[4][i])
+            } )
+        }
+
+        console.log(predictedData[0])
+
+>>>>>>> main
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 30, left: 60},
             width = 460 - margin.left - margin.right,
@@ -133,9 +172,18 @@ Promise.all([
                 "translate(" + margin.left + "," + margin.top + ")");
             
 
+<<<<<<< HEAD
         // Add X axis --> it is a date format
         var xScale = d3.scaleTime()
             .domain(d3.extent(predictedData.time))
+=======
+        xMin = Math.min(d3.min(pastData, function(d) { return d.time; }), d3.min(predictedData, function(d) { return d.time; }) )
+        xMax = Math.max(d3.max(pastData, function(d) { return d.time; }), d3.max(predictedData, function(d) { return d.time; }) )
+        
+        // Add X axis --> it is a date format
+        var xScale = d3.scaleTime()
+            .domain([xMin, xMax])
+>>>>>>> main
             .range([ 0, width ]);
 
         svg.append("g")
@@ -144,7 +192,11 @@ Promise.all([
 
         // Add Y axis
         var yScale = d3.scaleLinear()
+<<<<<<< HEAD
             .domain([0, d3.max(predictedData.eastCoast)])
+=======
+            .domain(d3.extent(pastData, function(d) { return d.eastCoast; }))
+>>>>>>> main
             .range([ height, 0 ]);
 
         svg.append("g")
@@ -152,14 +204,31 @@ Promise.all([
 
         //create line
         let makeLine = d3.line()
+<<<<<<< HEAD
                         .x(d=> yScale(d.time))
                         .y(d => yScale(d.eastCoast));
 
         // Add the line
+=======
+                        .x(d => xScale(d.time))
+                        .y(d => yScale(d.eastCoast));
+
+        // Add the past line
+>>>>>>> main
         svg.append("path")
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 1.5)
+<<<<<<< HEAD
+=======
+            .attr("d", makeLine(pastData))
+
+        //add the prediction line
+        svg.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "red")
+            .attr("stroke-width", 1.5)
+>>>>>>> main
             .attr("d", makeLine(predictedData))
     });
 });

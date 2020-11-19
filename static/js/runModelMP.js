@@ -7,10 +7,31 @@ const WTIURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18
 const petroleum_exportURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTEXUS2.W`
 const petroleum_importURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTIMUS2.W`
 
+function simpleAve(arr){
+
+    let arrSimpleave = []
+    let arrStdev=math.std(arr)
+    let arrMean=math.mean(arr)
+
+    for (let i = 1; i < arr.length; i++){
+
+        // normalizing the data using simple averages. Subtracting the array mean then dividing the result by the standard deviation
+        arrSimpleave.push((arr[i] - arrMean)/arrStdev)
+    }
+
+    console.log(arrSimpleave)
+    return arrSimpleave
+
+}
+
+
+
 function difference(arr) {
+    
     // Difference data from the API
     let arrDifferenced = []
-    for (let i = 1; i < arr.length; i++) {
+    for (let i = 1; i < arr.length; i++){
+
         arrDifferenced.push(arr[i] - arr[i - 1])
     }
 
@@ -26,24 +47,18 @@ function processData(d,modelChoice) {
 
     if (modelChoice=='LSTM_model'){
         for(let i = 0; i<8; i++){
-            gasPricesProcessed.push(difference(d[i]).slice(0,8).reverse());
+            gasPricesProcessed.push(simpleAve(d[i]).slice(0,8).reverse());
         }
-    
-        // console.log(`There are ${gasPricesProcessed.length} gas price arrays that contain ${gasPricesProcessed[0].length} elements `)
-    
-        let elements = gasPricesProcessed.length*gasPricesProcessed[0].length
-    
-        // console.log(`This is a total of ${elements} elements`)
-        // console.log(gasPricesProcessed)
+
         // Process WTI spot price
-        let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,8).reverse();
+        let WTIProcessed = simpleAve(d[5].slice(0,8).reverse());
     
         // console.log(`There are ${WTIProcessed.length} WTI processed elements`)
         // console.log(WTIProcessed)
     
         // Process Import/Export data
-        let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,8).reverse();
-        let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,8).reverse();
+        let petroleum_exportProcessed = simpleAve(d[6].slice(0,8).reverse());
+        let petroleum_importProcessed = simpleAve(d[7].map(a => a /100000).slice(0,8).reverse());
     
         // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
         // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
@@ -84,7 +99,7 @@ function processData(d,modelChoice) {
                 petroleum_importProcessed[i]])
             }  
         }
-        console.log(week)
+        // console.log(week)
     return week
 }
 

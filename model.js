@@ -1,129 +1,102 @@
-const eastCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R10_DPG.W`
-const midwestURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R20_DPG.W`
-const gulfCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R30_DPG.W`
-const rockyMountainURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R40_DPG.W`
-const westCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R50_DPG.W`
-const WTIURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.RWTC.W`
-const petroleum_exportURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTEXUS2.W`
-const petroleum_importURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTIMUS2.W`
+const eastCoastURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.EMM_EPM0_PTE_R10_DPG.W`
+const midwestURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.EMM_EPM0_PTE_R20_DPG.W`
+const gulfCoastURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.EMM_EPM0_PTE_R30_DPG.W`
+const rockyMountainURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.EMM_EPM0_PTE_R40_DPG.W`
+const westCoastURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.EMM_EPM0_PTE_R50_DPG.W`
+const WTIURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.RWTC.W`
+const petroleum_exportURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.WTTEXUS2.W`
+const petroleum_importURL = `http://api.eia.gov/series/?api_key=${API_KEY}&series_id=PET.WTTIMUS2.W`
 
-function difference(arr) {
+function difference(arr){
     // Difference data from the API
-    let arrDifferenced = []
-    for (let i = 1; i < arr.length; i++) {
-        arrDifferenced.push(arr[i] - arr[i - 1])
+    let arrDifferenced =[]
+    for(let i =1; i<arr.length  ; i++){
+        arrDifferenced.push(arr[i] - arr[i-1])
     }
 
+    // for each api, this will give the price or total change from one week to the next
+    // console.log(arrDifferenced)
     return arrDifferenced
 }
 
-function processData(d,modelChoice) {
+function processData(d){
     //difference gas prices
-    let gasPricesProcessed = []
+    let gasPricesProcessed =[]
+    for(let i = 0; i<8; i++){
+        gasPricesProcessed.push(difference(d[i]).slice(0,8).reverse());
+    }
+
+    console.log(`There are ${gasPricesProcessed.length} gas price arrays that contain ${gasPricesProcessed[0].length} elements `)
+
+    let elements = gasPricesProcessed.length*gasPricesProcessed[0].length
+
+    console.log(`This is a total of ${elements} elements`)
+    // console.log(gasPricesProcessed)
+    // Process WTI spot price
+    let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,8).reverse();
+
+    console.log(`There are ${WTIProcessed.length} WTI processed elements`)
+    // console.log(WTIProcessed)
+
+    // Process Import/Export data
+    let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,8).reverse();
+    let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,8).reverse();
+
+    // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
+    // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
 
     //make tensor
-    let week = []
-
-    if (modelChoice=='LSTM_model'){
-        for(let i = 0; i<8; i++){
-            gasPricesProcessed.push(difference(d[i]).slice(0,8).reverse());
-        }
-    
-        // console.log(`There are ${gasPricesProcessed.length} gas price arrays that contain ${gasPricesProcessed[0].length} elements `)
-    
-        let elements = gasPricesProcessed.length*gasPricesProcessed[0].length
-    
-        // console.log(`This is a total of ${elements} elements`)
-        // console.log(gasPricesProcessed)
-        // Process WTI spot price
-        let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0,8).reverse();
-    
-        // console.log(`There are ${WTIProcessed.length} WTI processed elements`)
-        // console.log(WTIProcessed)
-    
-        // Process Import/Export data
-        let petroleum_exportProcessed = d[6].map(a => a /100000).slice(0,8).reverse();
-        let petroleum_importProcessed = d[7].map(a => a /100000).slice(0,8).reverse();
-    
-        // console.log(`There are ${petroleum_exportProcessed.length} Petroleum export processed elements`)
-        // console.log(`There are ${petroleum_importProcessed .length} Petroleum import processed elements`)
-    
-        for(let i=0; i<8; i++){
-            week.push([gasPricesProcessed[0][i], 
-            gasPricesProcessed[1][i], 
-            gasPricesProcessed[2][i], 
-            gasPricesProcessed[3][i],
-            gasPricesProcessed[4][i], 
-            WTIProcessed[i], 
-            petroleum_exportProcessed[i],
-            petroleum_importProcessed[i]])
-        }
+    let week=[]
+    for(let i=0; i<8; i++){
+        week.push([gasPricesProcessed[0][i], 
+        gasPricesProcessed[1][i], 
+        gasPricesProcessed[2][i], 
+        gasPricesProcessed[3][i],
+        gasPricesProcessed[4][i], 
+        WTIProcessed[i], 
+        petroleum_exportProcessed[i],
+        petroleum_importProcessed[i]])
     }
-            else{
-
-            for (let i = 0; i < 5; i++) {
-                gasPricesProcessed.push(difference(d[i]).slice(0, 4).reverse());
-            }
-        
-            // Process WTI spot price
-            let WTIProcessed = difference(d[5].map(a => a / 100)).slice(0, 4).reverse();
-        
-            // Process Import/Export data
-            let petroleum_exportProcessed = d[6].map(a => a / 100000).slice(0, 4).reverse();
-            let petroleum_importProcessed = d[7].map(a => a / 100000).slice(0, 4).reverse();
-        
-
-            for (let i = 0; i < 4; i++) {
-                week.push([gasPricesProcessed[0][i],
-                gasPricesProcessed[1][i],
-                gasPricesProcessed[2][i],
-                gasPricesProcessed[3][i],
-                gasPricesProcessed[4][i],
-                WTIProcessed[i],
-                petroleum_exportProcessed[i],
-                petroleum_importProcessed[i]])
-            }  
-        }
-        console.log(week)
+    // console.log(week)
     return week
 }
 
-async function makePrediction(d, timesteps, modelChoice) {
+async function makePrediction(d, timesteps,modelChoice){
 
-    // Load model
-    const model = await tf.loadLayersModel(`static/js/models/${modelChoice}/model.json`)
-    let week = processData(d,modelChoice);
-    let forPrediction
+        // Load model
+        const model = await tf.loadLayersModel(`${modelChoice}/model.json`)
+        let week = processData(d);
 
-    //use model to compute predicted quantities for timestep periods
-    for (let i = 0; i < timesteps; i++) {
-        //convert week to tensor
+        // console.log(week)
 
-        if (modelChoice == 'LSTM_model'){
-            forPrediction = tf.tensor([[week[week.length - 8], week[week.length - 7], week[week.length - 7], week[week.length - 5]
+        //use model to compute predicted quantities for timestep periods
+        for(let i=0; i<timesteps; i++){
+            //convert week to tensor
+            let forPrediction = tf.tensor([[week[week.length - 8], week[week.length - 7], week[week.length - 7], week[week.length - 5]
                 ,week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 8,8])
 
-        } else {
-        
-            forPrediction = tf.tensor([[week[week.length - 4], week[week.length - 3], week[week.length - 2], week[week.length - 1]]], [1, 4, 8])
+            // console.log(forPrediction)
+
+            // run the model
+            prediction = model.predict(forPrediction).arraySync()[0];
+
+            // console.log(prediction)
+            
+            week.push(prediction)
         }
-        // run the model
-        prediction = model.predict(forPrediction).arraySync()[0];
 
-        week.push(prediction)
-    }
-
-    for (let i = 0; i < 5; i++) {
-        for (let j = 1; j <= timesteps; j++) {
-            d[i].unshift(d[i][0] + week[j][i])
+        for(let i=0; i<5; i++){
+            for(let j=1;j<=timesteps;j++){
+                d[i].unshift(d[i][0] + week[j][i])
+            }
         }
-    }
 
-    predictedGasPrices = [d[0], d[1], d[2], d[3], d[4]]
+        predictedGasPrices = [d[0],d[1],d[2],d[3],d[4]]
 
-    return predictedGasPrices
+        return predictedGasPrices
 
 }
+
 
 function makeModelChart(data, timeStamps, region, timesteps, modelChoice) {
 
@@ -299,4 +272,3 @@ function onSelect(){
 }
 
 makePage("eastCoast", 12, "all_channel_linear_js")
-

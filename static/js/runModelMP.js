@@ -1,11 +1,11 @@
-const eastCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R10_DPG.W`
-const midwestURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R20_DPG.W`
-const gulfCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R30_DPG.W`
-const rockyMountainURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R40_DPG.W`
-const westCoastURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R50_DPG.W`
-const WTIURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.RWTC.W`
-const petroleum_exportURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTEXUS2.W`
-const petroleum_importURL = `http://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTIMUS2.W`
+const eastCoastURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R10_DPG.W`
+const midwestURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R20_DPG.W`
+const gulfCoastURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R30_DPG.W`
+const rockyMountainURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R40_DPG.W`
+const westCoastURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.EMM_EPM0_PTE_R50_DPG.W`
+const WTIURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.RWTC.W`
+const petroleum_exportURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTEXUS2.W`
+const petroleum_importURL = `https://api.eia.gov/series/?api_key=84914f4bb99838aa4a20314d97b18449&series_id=PET.WTTIMUS2.W`
 
 function simpleAve(arr){
 

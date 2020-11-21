@@ -576,6 +576,9 @@ function makeImportExportChart(data, timeStamps) {
     }else if(modelChoice == "LSTM_model"){
         modelDescription.html("<pre><code>model = tf.keras.models.Sequential([tf.keras.layers.LSTM(32, return_sequences=True),tf.keras.layers.Dense(units=1)])</code></pre>")
     }
+    else if(modelChoice == "all_channel_GRU_js"){
+        modelDescription.html("<pre><code>model = keras.models.Sequential([keras.layers.GRU(units = 8, input_shape=(X_train.shape[1],X_train.shape[2]), return_sequences=False),keras.layers.Dense(units=8)])</pre></code>")
+    }
 
     Promise.all([
         d3.json(eastCoastURL),
